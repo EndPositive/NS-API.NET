@@ -5,6 +5,7 @@
 .idea/
 NS-API.NET/bin/
 NS-API.NET/obj/
+NS-API.NET/Properties/
 
 # User-specific stuff
 .idea/**/workspace.xml
