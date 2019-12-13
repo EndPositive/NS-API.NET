@@ -15,7 +15,11 @@ namespace NS_API.NET
             // Console.Write(station.Namen.Kort);
             // var departures = ns.GetDeparturesByUicCode(station.UicCode).Result;
             // var disruptions = ns.GetDisruptions(true).Result;
-            
+            var disruptions = ns.GetDepartures(uicCode: "8400332").Result;
+            Console.Write(disruptions[0].Name);
+            disruptions = ns.GetDepartures(stationCode: "HFD").Result;
+            Console.Write(disruptions[0].Name);
+
             Console.WriteLine("");
             Console.WriteLine("Press enter to exit... ");
             Console.ReadLine();

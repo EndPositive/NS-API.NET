@@ -73,30 +73,31 @@ namespace NS_API.NET
 
             throw new System.ArgumentException();
         }
-        public async Task<List<DeparturesApi.Departure>> GetDeparturesByUicCode(string uicCode, DateTime? time = null, int maxJourneys = 10)
+        public async Task<List<DeparturesApi.Departure>> GetDepartures(string uicCode = null, string stationCode = null, DateTime? time = null, int maxJourneys = 10)
         {
+            if (uicCode != null && stationCode != null ||
+                uicCode == null && stationCode == null)
+            {
+                throw new System.ArgumentException();
+            }
+            
             time = time ?? DateTime.Now;
             string nowString = time.Value.ToString("s");
 
             var queryString = HttpUtility.ParseQueryString(string.Empty);
-            queryString["uicCode"] = uicCode;
             queryString["dateTime"] = nowString;
             queryString["maxJourneys"] = maxJourneys.ToString();
 
-            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?", queryString);
-            List<DeparturesApi.Departure> stations = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
-            return stations;
-        }
-        public async Task<List<DeparturesApi.Departure>> GetDeparturesByStationCode(string stationCode, DateTime? time = null, int maxJourneys = 10)
-        {
-            time = time ?? DateTime.Now;
-            string nowString = time.Value.ToString("s");
+            if (uicCode != null)
+            {
+                queryString["uicCode"] = uicCode;
+            }
 
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
-            queryString["code"] = stationCode;
-            queryString["dateTime"] = nowString;
-            queryString["maxJourneys"] = maxJourneys.ToString();
-
+            if (stationCode != null)
+            {
+                queryString["station"] = stationCode;
+            }
+            
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?", queryString);
             List<DeparturesApi.Departure> stations = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
             return stations;
