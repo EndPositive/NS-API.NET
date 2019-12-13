@@ -13,44 +13,66 @@ namespace NS_API.NET
     internal class NsApi
     {
         private JsonSerializerSettings JsonSettings { get; set; }
-
         private static readonly HttpClient Client = new HttpClient();
-
         public NsApi(string apiKey)
         {
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiKey);
             JsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
         }
-
         private async Task<string> HttpGet(string url)
         {
             string json = await Client.GetStringAsync(url);
             return json;
         }
-
         private async Task<string> HttpGet(string url, System.Collections.Specialized.NameValueCollection queryString)
         {
             string json = await Client.GetStringAsync(url + queryString);
             return json;
         }
-        
-        public async Task<List<StationsApi.Payload>> GetStations()
+        public async Task<List<StationsApi.Payload>> GetStations(string query = null)
         {
-            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/stations");
-            return JsonConvert.DeserializeObject<StationsApi>(json, this.JsonSettings).Payloads;
+            if (query != null)
+            {
+                List<StationsApi.Payload> stations = new System.Collections.Generic.List<StationsApi.Payload>();
+                foreach (StationsApi.Payload station in this.GetStations().Result)
+                {
+                    if (station.Code.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        station.Namen.Lang.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        station.Namen.Middel.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        station.Namen.Kort.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    {
+                        stations.Add(station);
+                    }
+                }
+                return stations;
+            }
+            else
+            {
+                var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/stations");
+                return JsonConvert.DeserializeObject<StationsApi>(json, this.JsonSettings).Payloads;
+            }
         }
-        
-        public StationsApi.Payload GetStationByUicCode(string uicCode)
+        public StationsApi.Payload GetStation(string uicCode = null, string stationCode = null, string query = null)
         {
-            return this.GetStations().Result.Find(station => station.UicCode == uicCode);
+            if (uicCode != null && stationCode != null ||
+                uicCode != null && query != null ||
+                stationCode != null && query != null)
+            {
+                throw new System.ArgumentException();
+            }
+            if (uicCode != null)
+            {
+                return this.GetStations().Result.Find(station => station.UicCode == uicCode);
+            }
+
+            if (stationCode != null)
+            {
+                return this.GetStations().Result.Find(stations => stations.Code == stationCode);
+            }
+
+            throw new System.ArgumentException();
         }
-        
-        public StationsApi.Payload GetStationByStationCode(string stationCode)
-        {
-            return this.GetStations().Result.Find(stations => stations.Code == stationCode);
-        }
-        
         public List<StationsApi.Payload> GetStationsByQuery(string query)
         {
             List<StationsApi.Payload> stationsbyquery = new System.Collections.Generic.List<StationsApi.Payload>();
@@ -66,7 +88,6 @@ namespace NS_API.NET
             }
             return stationsbyquery;
         }
-        
         public async Task<List<DeparturesApi.Departure>> GetDeparturesByUicCode(string uicCode, DateTime? time = null, int maxJourneys = 10)
         {
             time = time ?? DateTime.Now;
@@ -81,7 +102,6 @@ namespace NS_API.NET
             List<DeparturesApi.Departure> stations = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
             return stations;
         }
-
         public async Task<List<DeparturesApi.Departure>> GetDeparturesByStationCode(string stationCode, DateTime? time = null, int maxJourneys = 10)
         {
             time = time ?? DateTime.Now;
@@ -100,7 +120,7 @@ namespace NS_API.NET
         {
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["actual"] = actual.ToString();
-            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptionsl?", queryString);
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions?", queryString);
 
             return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
         }
