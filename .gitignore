@@ -3,6 +3,8 @@
 
 
 .idea/
+.NS-API.NET/bin/.
+.NS-API.NET/obj/.
 
 # User-specific stuff
 .idea/**/workspace.xml

@@ -1,10 +1,10 @@
 ﻿{
   "version": "1.0.0",
   "restore": {
-    "projectUniqueName": "C:\\Users\\jop-z\\OneDrive\\Documenten\\Visual Studio 2019\\NS-API.NET\\NS-API.NET\\NS-API.NET.csproj",
+    "projectUniqueName": "C:\\Users\\jop-z\\OneDrive\\Documenten\\Web Development\\NS_API.NET\\NS-API.NET\\NS-API.NET.csproj",
     "projectName": "NS-API.NET",
-    "projectPath": "C:\\Users\\jop-z\\OneDrive\\Documenten\\Visual Studio 2019\\NS-API.NET\\NS-API.NET\\NS-API.NET.csproj",
-    "outputPath": "C:\\Users\\jop-z\\OneDrive\\Documenten\\Visual Studio 2019\\NS-API.NET\\NS-API.NET\\obj\\",
+    "projectPath": "C:\\Users\\jop-z\\OneDrive\\Documenten\\Web Development\\NS_API.NET\\NS-API.NET\\NS-API.NET.csproj",
+    "outputPath": "C:\\Users\\jop-z\\OneDrive\\Documenten\\Web Development\\NS_API.NET\\NS-API.NET\\obj\\",
     "projectStyle": "PackageReference",
     "originalTargetFrameworks": [
       "netcoreapp3.0"

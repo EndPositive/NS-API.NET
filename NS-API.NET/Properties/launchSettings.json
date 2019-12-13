@@ -2,7 +2,7 @@
   "profiles": {
     "NS-API.NET": {
       "commandName": "Executable",
-      "executablePath": "C:\\Users\\jop-z\\OneDrive\\Documenten\\Visual Studio 2019\\NS-API.NET\\NS-API.NET\\bin\\Debug\\netcoreapp3.0\\NS-API.NET.exe"
+      "executablePath": "C:\\Users\\jop-z\\OneDrive\\Documenten\\Web Development\\NS_API.NET\\NS-API.NET\\bin\\Debug\\netcoreapp3.0\\NS-API.NET.exe"
     }
   }
 }
