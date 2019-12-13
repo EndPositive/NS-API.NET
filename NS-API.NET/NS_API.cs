@@ -73,21 +73,6 @@ namespace NS_API.NET
 
             throw new System.ArgumentException();
         }
-        public List<StationsApi.Payload> GetStationsByQuery(string query)
-        {
-            List<StationsApi.Payload> stationsbyquery = new System.Collections.Generic.List<StationsApi.Payload>();
-            foreach (StationsApi.Payload station in this.GetStations().Result)
-            {
-                if (station.Code.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                    station.Namen.Lang.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                    station.Namen.Middel.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                    station.Namen.Kort.Contains(query, StringComparison.OrdinalIgnoreCase))
-                {
-                    stationsbyquery.Add(station);
-                }
-            }
-            return stationsbyquery;
-        }
         public async Task<List<DeparturesApi.Departure>> GetDeparturesByUicCode(string uicCode, DateTime? time = null, int maxJourneys = 10)
         {
             time = time ?? DateTime.Now;

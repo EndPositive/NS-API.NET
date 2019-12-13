@@ -7,7 +7,6 @@ namespace NS_API.NET
         static void Main(string[] args)
         {
             var ns = new NsApi("e31c404aa678410385f3559ab20c12c8");
-            // var q = ns.GetStationsByQuery("Hoofddorp");
             // var stations = ns.GetStations(query: "Hoofd").Result;
             // Console.Write(stations[0].Namen.Kort);
             // var station = ns.GetStation(uicCode:"8400332");
