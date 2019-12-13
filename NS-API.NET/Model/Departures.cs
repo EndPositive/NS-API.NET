@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 
 namespace NS_API.NET.Departures
 {
-    public partial class DeparturesAPI
+    public partial class DeparturesApi
     {
         [JsonProperty("payload")]
         public Payload Payloads { get; set; }

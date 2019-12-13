@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 
 namespace NS_API.NET.Stations
 {
-    public partial class StationsAPI
+    public partial class StationsApi
     {
         [JsonProperty("payload")]
         public List<Payload> Payloads { get; set; }

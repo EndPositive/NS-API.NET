@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 
 namespace NS_API.NET.Disruptions
 {
-    public partial class DisruptionsAPI
+    public partial class DisruptionsApi
     {
         [JsonProperty("payload")]
         public List<Payload> Payloads { get; set; }

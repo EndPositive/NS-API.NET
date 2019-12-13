@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace NS_API.NET
 {
     class Program
     {
-        public NS_API NS_API { get; set; }
-        public ReisInfoAPI ReisInfoAPI { get; set; }
+        public NsApi Ns { get; set; }
         static void Main(string[] args)
         {
-            NS_API NS_API = new NS_API("e31c404aa678410385f3559ab20c12c8");
-            ReisInfoAPI ReisInfoAPI = new ReisInfoAPI(NS_API);
+            NsApi ns = new NsApi("e31c404aa678410385f3559ab20c12c8");
 
             /*
              * 
@@ -48,8 +45,8 @@ namespace NS_API.NET
              * 
              */
             
-            var disruptions = ReisInfoAPI.GetDisruptions().Result;
-            var actualdisruptions = ReisInfoAPI.GetDisruptions(true).Result;
+            var disruptions = ns.GetDisruptions().Result;
+            var actualdisruptions = ns.GetDisruptions(true).Result;
             
             Console.WriteLine("\nActuele verstoringen:");
             foreach (var dis in actualdisruptions)

@@ -1,52 +1,110 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Web;
 using Newtonsoft.Json;
+using NS_API.NET.Stations;
+using NS_API.NET.Departures;
+using NS_API.NET.Disruptions;
 
 namespace NS_API.NET
 {
-    class NS_API
+    class NsApi
     {
-        public string API_KEY { get; set; }
-        public JsonSerializerSettings JsonSettings { get; set; }
+        private string ApiKey { get; set; }
+        private JsonSerializerSettings JsonSettings { get; set; }
 
-        public static readonly HttpClient client = new HttpClient();
+        private static readonly HttpClient Client = new HttpClient();
 
-        /// <summary>
-        ///     Constructor for NS_API.
-        /// </summary>
-        /// <param name="API_KEY">NS API Key for api access (https://apiportal.ns.nl/).</param>
-        public NS_API(string API_KEY)
+        public NsApi(string apiKey)
         {
-            this.API_KEY = API_KEY;
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", API_KEY);
+            this.ApiKey = apiKey;
+            Client.DefaultRequestHeaders.Accept.Clear();
+            Client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiKey);
             JsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
         }
 
-        /// <summary>
-        ///     GET request to NS API
-        /// </summary>
-        /// <param name="url">URL</param>
-        /// <returns>Returns JSON Task.</returns>
-        public async Task<string> HTTPGet(string url)
+        public async Task<string> HttpGet(string url)
         {
-            // Console.WriteLine(url);
-            string json = await client.GetStringAsync(url);
+            string json = await Client.GetStringAsync(url);
             return json;
         }
 
-        /// <summary>
-        ///     GET request to NS API and add parameters
-        /// </summary>
-        /// <param name="url">URL</param>
-        /// <param name="queryString">Parameters</param>
-        /// <returns>Returns JSON Task.</returns>
-        public async Task<string> HTTPGet(string url, System.Collections.Specialized.NameValueCollection queryString)
+        public async Task<string> HttpGet(string url, System.Collections.Specialized.NameValueCollection queryString)
         {
-            // Console.WriteLine(url + queryString);
-            string json = await client.GetStringAsync(url + queryString);
+            string json = await Client.GetStringAsync(url + queryString);
             return json;
+        }
+        
+        public async Task<List<StationsApi.Payload>> GetStations()
+        {
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/stations");
+            return JsonConvert.DeserializeObject<StationsApi>(json, this.JsonSettings).Payloads;
+        }
+        
+        public StationsApi.Payload GetStationByUicCode(string uicCode)
+        {
+            return this.GetStations().Result.Find(station => station.UicCode == uicCode);
+        }
+        
+        public StationsApi.Payload GetStationByStationCode(string stationCode)
+        {
+            return this.GetStations().Result.Find(stations => stations.Code == stationCode);
+        }
+        
+        public List<StationsApi.Payload> GetStationsByQuery(string query)
+        {
+            List<StationsApi.Payload> stationsbyquery = new System.Collections.Generic.List<StationsApi.Payload>();
+            foreach (StationsApi.Payload station in this.GetStations().Result)
+            {
+                if (station.Code.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    station.Namen.Lang.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    station.Namen.Middel.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    station.Namen.Kort.Contains(query, StringComparison.OrdinalIgnoreCase))
+                {
+                    stationsbyquery.Add(station);
+                }
+            }
+            return stationsbyquery;
+        }
+        
+        public async Task<List<DeparturesApi.Departure>> GetDeparturesByUicCode(string uicCode, DateTime? time = null, int maxJourneys = 10)
+        {
+            time = time ?? DateTime.Now;
+            string nowString = time.Value.ToString("s");
+
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["uicCode"] = uicCode;
+            queryString["dateTime"] = nowString;
+            queryString["maxJourneys"] = maxJourneys.ToString();
+
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?", queryString);
+            List<DeparturesApi.Departure> stations = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
+            return stations;
+        }
+
+        public async Task<List<DeparturesApi.Departure>> GetDeparturesByStationCode(string stationCode, DateTime? time = null, int maxJourneys = 10)
+        {
+            time = time ?? DateTime.Now;
+            string nowString = time.Value.ToString("s");
+
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["code"] = stationCode;
+            queryString["dateTime"] = nowString;
+            queryString["maxJourneys"] = maxJourneys.ToString();
+
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?", queryString);
+            List<DeparturesApi.Departure> stations = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
+            return stations;
+        }
+        public async Task<List<DisruptionsApi.Payload>> GetDisruptions(bool actual=false)
+        {
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["actual"] = actual.ToString();
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions?", queryString);
+
+            return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
         }
     }
 }
