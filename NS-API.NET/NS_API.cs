@@ -10,28 +10,26 @@ using NS_API.NET.Disruptions;
 
 namespace NS_API.NET
 {
-    class NsApi
+    internal class NsApi
     {
-        private string ApiKey { get; set; }
         private JsonSerializerSettings JsonSettings { get; set; }
 
         private static readonly HttpClient Client = new HttpClient();
 
         public NsApi(string apiKey)
         {
-            this.ApiKey = apiKey;
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiKey);
             JsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
         }
 
-        public async Task<string> HttpGet(string url)
+        private async Task<string> HttpGet(string url)
         {
             string json = await Client.GetStringAsync(url);
             return json;
         }
 
-        public async Task<string> HttpGet(string url, System.Collections.Specialized.NameValueCollection queryString)
+        private async Task<string> HttpGet(string url, System.Collections.Specialized.NameValueCollection queryString)
         {
             string json = await Client.GetStringAsync(url + queryString);
             return json;
@@ -102,7 +100,7 @@ namespace NS_API.NET
         {
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["actual"] = actual.ToString();
-            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions?", queryString);
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptionsl?", queryString);
 
             return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
         }
