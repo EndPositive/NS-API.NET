@@ -14,7 +14,9 @@ namespace NS_API.NET
             // var departures = ns.GetDepartures(uicCode: "8400332").Result;
             // var departures = ns.GetDepartures(stationCode: "HFD").Result;
             // var disruptions = ns.GetArrivals(uicCode: "8400332").Result;
-            // var departures = ns.GetArrivals(stationCode: "HFD").Result
+            // var departures = ns.GetArrivals(stationCode: "HFD").Result;
+            var calamities = ns.GetCalamities().Result;
+            Console.WriteLine(calamities[0].Titel);
 
             Console.WriteLine("");
             Console.WriteLine("Press enter to exit... ");

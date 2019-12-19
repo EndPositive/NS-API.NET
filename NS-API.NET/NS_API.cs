@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Web;
 using Newtonsoft.Json;
 using NS_API.NET.Arrivals;
+using NS_API.NET.Calamities;
 using NS_API.NET.Stations;
 using NS_API.NET.Departures;
 using NS_API.NET.Disruptions;
@@ -140,6 +141,11 @@ namespace NS_API.NET
 
             return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
         }
-
+        public async Task<List<CalamitiesApi.Melding>> GetCalamities()
+        {
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v1/calamities");
+            List<CalamitiesApi.Melding> meldingen = JsonConvert.DeserializeObject<CalamitiesApi>(json, this.JsonSettings).Meldingen;
+            return meldingen;
+        }
     }
 }
