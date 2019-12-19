@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Web;
 using Newtonsoft.Json;
+using NS_API.NET.Arrivals;
 using NS_API.NET.Stations;
 using NS_API.NET.Departures;
 using NS_API.NET.Disruptions;
@@ -99,8 +100,37 @@ namespace NS_API.NET
             }
             
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?", queryString);
-            List<DeparturesApi.Departure> stations = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
-            return stations;
+            List<DeparturesApi.Departure> departures = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
+            return departures;
+        }
+        public async Task<List<ArrivalsApi.Arrival>> GetArrivals(string uicCode = null, string stationCode = null, DateTime? time = null, int maxJourneys = 10)
+        {
+            if (uicCode != null && stationCode != null ||
+                uicCode == null && stationCode == null)
+            {
+                throw new System.ArgumentException();
+            }
+            
+            time = time ?? DateTime.Now;
+            string nowString = time.Value.ToString("s");
+
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["dateTime"] = nowString;
+            queryString["maxJourneys"] = maxJourneys.ToString();
+
+            if (uicCode != null)
+            {
+                queryString["uicCode"] = uicCode;
+            }
+
+            if (stationCode != null)
+            {
+                queryString["station"] = stationCode;
+            }
+            
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/arrivals?", queryString);
+            List<ArrivalsApi.Arrival> arrivals = JsonConvert.DeserializeObject<ArrivalsApi>(json, this.JsonSettings).Payloads.Arrivals;
+            return arrivals;
         }
         public async Task<List<DisruptionsApi.Payload>> GetDisruptions(bool actual=false)
         {
@@ -110,5 +140,6 @@ namespace NS_API.NET
 
             return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
         }
+
     }
 }

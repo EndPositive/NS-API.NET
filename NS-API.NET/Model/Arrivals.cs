@@ -1,29 +1,41 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace NS_API.NET.Departures
+namespace NS_API.NET.Arrivals
 {
-    public partial class DeparturesApi
+    public partial class ArrivalsApi
     {
         [JsonProperty("payload")]
         public Payload Payloads { get; set; }
-
+        
         public partial class Payload
         {
-            [JsonProperty("source")]
-            public string Source { get; set; }
-
-            [JsonProperty("departures")]
-            public List<Departure> Departures { get; set; }
+            [JsonProperty("arrivals")]
+            public List<Arrival> Arrivals { get; set; }
         }
 
-        public partial class Departure
+        public partial class Arrival
         {
-            [JsonProperty("direction")]
-            public string Direction { get; set; }
+            [JsonProperty("origin")]
+            public string Origin { get; set; }
 
             [JsonProperty("name")]
             public string Name { get; set; }
+
+            [JsonProperty("plannedTrack")]
+            public string PlannedTrack { get; set; }
+
+            [JsonProperty("actualTrack")]
+            public string ActualTrack { get; set; }
+
+            [JsonProperty("product")]
+            public Product Product { get; set; }
+
+            [JsonProperty("trainCategory")]
+            public string TrainCategory { get; set; }
+
+            [JsonProperty("cancelled")]
+            public bool Cancelled { get; set; }
 
             [JsonProperty("plannedDateTime")]
             public string PlannedDateTime { get; set; }
@@ -36,24 +48,6 @@ namespace NS_API.NET.Departures
 
             [JsonProperty("actualTimeZoneOffset")]
             public long ActualTimeZoneOffset { get; set; }
-
-            [JsonProperty("plannedTrack")]
-            public string PlannedTrack { get; set; }
-
-            [JsonProperty("product")]
-            public Product Product { get; set; }
-
-            [JsonProperty("trainCategory")]
-            public string TrainCategory { get; set; }
-
-            [JsonProperty("cancelled")]
-            public bool Cancelled { get; set; }
-
-            [JsonProperty("routeStations")]
-            public List<RouteStation> RouteStations { get; set; }
-
-            [JsonProperty("departureStatus")]
-            public string DepartureStatus { get; set; }
         }
 
         public partial class Product
@@ -78,15 +72,6 @@ namespace NS_API.NET.Departures
 
             [JsonProperty("type")]
             public string Type { get; set; }
-        }
-
-        public partial class RouteStation
-        {
-            [JsonProperty("uicCode")]
-            public string UicCode { get; set; }
-
-            [JsonProperty("mediumName")]
-            public string MediumName { get; set; }
         }
     }
 }
