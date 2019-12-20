@@ -8,6 +8,7 @@ using NS_API.NET.Arrivals;
 using NS_API.NET.Calamities;
 using NS_API.NET.Stations;
 using NS_API.NET.Departures;
+using NS_API.NET.Disruption;
 using NS_API.NET.Disruptions;
 
 namespace NS_API.NET
@@ -141,6 +142,17 @@ namespace NS_API.NET
 
             return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
         }
+        public async Task<DisruptionApi.Payload> GetDisruption(string id)
+        {
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions/"+id);
+            return JsonConvert.DeserializeObject<DisruptionApi>(json, this.JsonSettings).Payloads;
+        }
+        public async Task<List<DisruptionsApi.Payload>> GetStationDisruptions(string code)
+        {
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions/station/"+code);
+            return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
+        }
+
         public async Task<List<CalamitiesApi.Melding>> GetCalamities()
         {
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v1/calamities");
