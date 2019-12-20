@@ -23,6 +23,9 @@ namespace NS_API.NET
             
             // var calamities  = ns.GetCalamities().Result;
 
+            var trips = ns.GetTrips("HFD","ASD").Result;
+            trips = ns.GetTrips(8400332, 8400058).Result;
+
             Console.WriteLine("");
             Console.WriteLine("Press enter to exit... ");
             Console.ReadLine();

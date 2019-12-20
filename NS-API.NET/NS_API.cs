@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Web;
+using System.Xml;
 using Newtonsoft.Json;
 using NS_API.NET.Arrivals;
 using NS_API.NET.Calamities;
@@ -10,6 +11,7 @@ using NS_API.NET.Stations;
 using NS_API.NET.Departures;
 using NS_API.NET.Disruption;
 using NS_API.NET.Disruptions;
+using NS_API.NET.Trips;
 
 namespace NS_API.NET
 {
@@ -30,6 +32,7 @@ namespace NS_API.NET
         }
         private async Task<string> HttpGet(string url, System.Collections.Specialized.NameValueCollection queryString)
         {
+            Console.WriteLine(url + queryString);
             string json = await Client.GetStringAsync(url + queryString);
             return json;
         }
@@ -152,12 +155,76 @@ namespace NS_API.NET
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions/station/"+code);
             return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
         }
-
         public async Task<List<CalamitiesApi.Melding>> GetCalamities()
         {
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v1/calamities");
             List<CalamitiesApi.Melding> meldingen = JsonConvert.DeserializeObject<CalamitiesApi>(json, this.JsonSettings).Meldingen;
             return meldingen;
+        }
+        public async Task<List<TripsApi.Trip>> GetTrips(string fromStation, string toStation, string viaStation = null,
+            string travelClass = "SECOND_CLASS", bool originTransit = false, bool originWalk = false,
+            bool originBike = false, bool originCar = false, bool destinationTransit = false,
+            bool destinationWalk = false, bool destinationBike = false, bool destinationCar = false,
+            int travelAssistanceTransferTime = 0, bool searchForAccessibleTrip = false,
+            bool excludeHighSpeedTrains = false, bool excludeReservationRequired = false)
+        {
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["fromStation"] = fromStation;
+            queryString["toStation"] = toStation;
+            if (viaStation != null)
+            {
+                queryString["viaStation"] = viaStation;
+            }
+            queryString["travelClass"] = travelClass;
+            queryString["originTransit"] = originTransit.ToString();
+            queryString["originBike"] = originBike.ToString();
+            queryString["originCar"] = originCar.ToString();
+            queryString["originWalk"] = originWalk.ToString();
+            queryString["destinationTransit"] = destinationTransit.ToString();
+            queryString["destinationWalk"] = destinationWalk.ToString();
+            queryString["destinationBike"] = destinationBike.ToString();
+            queryString["destinationCar"] = destinationCar.ToString();
+            queryString["travelAssistanceTransferTime"] = travelAssistanceTransferTime.ToString();
+            queryString["searchForAccessibleTrip"] = searchForAccessibleTrip.ToString();
+            queryString["excludeHighSpeedTrains"] = excludeHighSpeedTrains.ToString();
+            queryString["excludeReservationRequired"] = excludeReservationRequired.ToString();
+
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v3/trips?", queryString);
+
+            return JsonConvert.DeserializeObject<TripsApi>(json, this.JsonSettings).Trips;
+        }
+        
+        public async Task<List<TripsApi.Trip>> GetTrips(int originUicCode, int destinationUicCode, int viaUicCode = default,
+            string travelClass = "SECOND_CLASS", bool originTransit = false, bool originWalk = false,
+            bool originBike = false, bool originCar = false, bool destinationTransit = false,
+            bool destinationWalk = false, bool destinationBike = false, bool destinationCar = false,
+            int travelAssistanceTransferTime = 0, bool searchForAccessibleTrip = false,
+            bool excludeHighSpeedTrains = false, bool excludeReservationRequired = false)
+        {
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["originUicCode"] = originUicCode.ToString();
+            queryString["destinationUicCode"] = destinationUicCode.ToString();
+            if (viaUicCode != default)
+            {
+                queryString["viaUicCode"] = viaUicCode.ToString();
+            }
+            queryString["travelClass"] = travelClass;
+            queryString["originTransit"] = originTransit.ToString();
+            queryString["originBike"] = originBike.ToString();
+            queryString["originCar"] = originCar.ToString();
+            queryString["originWalk"] = originWalk.ToString();
+            queryString["destinationTransit"] = destinationTransit.ToString();
+            queryString["destinationWalk"] = destinationWalk.ToString();
+            queryString["destinationBike"] = destinationBike.ToString();
+            queryString["destinationCar"] = destinationCar.ToString();
+            queryString["travelAssistanceTransferTime"] = travelAssistanceTransferTime.ToString();
+            queryString["searchForAccessibleTrip"] = searchForAccessibleTrip.ToString();
+            queryString["excludeHighSpeedTrains"] = excludeHighSpeedTrains.ToString();
+            queryString["excludeReservationRequired"] = excludeReservationRequired.ToString();
+
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v3/trips?", queryString);
+
+            return JsonConvert.DeserializeObject<TripsApi>(json, this.JsonSettings).Trips;
         }
     }
 }
