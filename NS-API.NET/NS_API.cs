@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Web;
-using System.Xml;
 using Newtonsoft.Json;
 using NS_API.NET.Arrivals;
 using NS_API.NET.Calamities;
@@ -220,5 +219,13 @@ namespace NS_API.NET
 
             return JsonConvert.DeserializeObject<TripsApi>(json, this.JsonSettings).Trips;
         }
-    }
+
+        public async Task<TripsApi.Trip> GetTrip(string reconCtx)
+        {
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["ctxRecon"] = reconCtx;
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v3/trips/trip?", queryString);
+            return JsonConvert.DeserializeObject<TripsApi.Trip>(json, this.JsonSettings);
+        }
+    }    
 }
