@@ -9,6 +9,7 @@ using NS_API.NET.Calamities;
 using NS_API.NET.Stations;
 using NS_API.NET.Departures;
 using NS_API.NET.Disruptions;
+using NS_API.NET.ExitSide;
 using NS_API.NET.Trips;
 
 namespace NS_API.NET
@@ -225,6 +226,15 @@ namespace NS_API.NET
             queryString["ctxRecon"] = reconCtx;
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v3/trips/trip?", queryString);
             return JsonConvert.DeserializeObject<TripsApi.Trip>(json, this.JsonSettings);
+        }
+        public async Task<ExitSideApi> GetExitSide(int originUicCode, int destinationUicCode, int track)
+        {
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["originUicCode"] = originUicCode.ToString();
+            queryString["uicCode"] = destinationUicCode.ToString();
+            queryString["track"] = track.ToString();
+            var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v1/exitside?", queryString);
+            return JsonConvert.DeserializeObject<ExitSideApi>(json, this.JsonSettings);
         }
     }    
 }
