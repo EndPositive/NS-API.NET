@@ -4,13 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Web;
 using Newtonsoft.Json;
-using NS_API.NET.Arrivals;
-using NS_API.NET.Calamities;
-using NS_API.NET.Stations;
-using NS_API.NET.Departures;
-using NS_API.NET.Disruptions;
-using NS_API.NET.ExitSide;
-using NS_API.NET.Trips;
+using NS_API.NET.Model;
 
 namespace NS_API.NET
 {
@@ -34,12 +28,12 @@ namespace NS_API.NET
             string json = await Client.GetStringAsync(url + queryString);
             return json;
         }
-        public async Task<List<StationsApi.Payload>> GetStations(string query = null)
+        public async Task<List<StationsModel.Station>> GetStations(string query = null)
         {
             if (query != null)
             {
-                List<StationsApi.Payload> stations = new System.Collections.Generic.List<StationsApi.Payload>();
-                foreach (StationsApi.Payload station in this.GetStations().Result)
+                List<StationsModel.Station> stations = new System.Collections.Generic.List<StationsModel.Station>();
+                foreach (StationsModel.Station station in this.GetStations().Result)
                 {
                     if (station.Code.Contains(query, StringComparison.OrdinalIgnoreCase) ||
                         station.Namen.Lang.Contains(query, StringComparison.OrdinalIgnoreCase) ||
@@ -54,18 +48,18 @@ namespace NS_API.NET
             else
             {
                 var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/stations");
-                return JsonConvert.DeserializeObject<StationsApi>(json, this.JsonSettings).Payloads;
+                return JsonConvert.DeserializeObject<StationsModel>(json, this.JsonSettings).Stations;
             }
         }
-        public StationsApi.Payload GetStation(int uicCode)
+        public StationsModel.Station GetStation(int uicCode)
         {
             return this.GetStations().Result.Find(station => station.UicCode == uicCode.ToString());
         }
-        public StationsApi.Payload GetStation(string stationCode)
+        public StationsModel.Station GetStation(string stationCode)
         {
             return this.GetStations().Result.Find(stations => stations.Code == stationCode);
         }
-        public async Task<List<DeparturesApi.Departure>> GetDepartures(int uicCode, DateTime? time = null,
+        public async Task<List<DeparturesModel.Departure>> GetDepartures(int uicCode, DateTime? time = null,
             int maxJourneys = 10)
         {
             time = time ?? DateTime.Now;
@@ -77,10 +71,9 @@ namespace NS_API.NET
             queryString["uicCode"] = uicCode.ToString();
 
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?", queryString);
-            List<DeparturesApi.Departure> departures = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
-            return departures;
+            return JsonConvert.DeserializeObject<DeparturesModel>(json, this.JsonSettings).Departures.Departures;
         }
-        public async Task<List<DeparturesApi.Departure>> GetDepartures(string stationCode, DateTime? time = null,
+        public async Task<List<DeparturesModel.Departure>> GetDepartures(string stationCode, DateTime? time = null,
             int maxJourneys = 10)
         {
             time = time ?? DateTime.Now;
@@ -92,10 +85,9 @@ namespace NS_API.NET
             queryString["station"] = stationCode;
             
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?", queryString);
-            List<DeparturesApi.Departure> departures = JsonConvert.DeserializeObject<DeparturesApi>(json, this.JsonSettings).Payloads.Departures;
-            return departures;
+            return  JsonConvert.DeserializeObject<DeparturesModel>(json, this.JsonSettings).Departures.Departures;
         }
-        public async Task<List<ArrivalsApi.Arrival>> GetArrivals(int uicCode, DateTime? time = null,
+        public async Task<List<ArrivalsModel.Arrival>> GetArrivals(int uicCode, DateTime? time = null,
             int maxJourneys = 10)
         {
             time = time ?? DateTime.Now;
@@ -107,10 +99,9 @@ namespace NS_API.NET
             queryString["uicCode"] = uicCode.ToString();
             
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/arrivals?", queryString);
-            List<ArrivalsApi.Arrival> arrivals = JsonConvert.DeserializeObject<ArrivalsApi>(json, this.JsonSettings).Payloads.Arrivals;
-            return arrivals;
+            return JsonConvert.DeserializeObject<ArrivalsModel>(json, this.JsonSettings).Arrivals.Arrivals;
         }
-        public async Task<List<ArrivalsApi.Arrival>> GetArrivals(string stationCode, DateTime? time = null,
+        public async Task<List<ArrivalsModel.Arrival>> GetArrivals(string stationCode, DateTime? time = null,
             int maxJourneys = 10)
         {
             time = time ?? DateTime.Now;
@@ -122,39 +113,37 @@ namespace NS_API.NET
             queryString["station"] = stationCode;
             
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/arrivals?", queryString);
-            List<ArrivalsApi.Arrival> arrivals = JsonConvert.DeserializeObject<ArrivalsApi>(json, this.JsonSettings).Payloads.Arrivals;
-            return arrivals;
+            return JsonConvert.DeserializeObject<ArrivalsModel>(json, this.JsonSettings).Arrivals.Arrivals;
         }
-        public async Task<List<DisruptionsApi.Payload>> GetDisruptions(bool actual=false)
+        public async Task<List<DisruptionsModel.Disruption>> GetDisruptions(bool actual=false)
         {
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["actual"] = actual.ToString();
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions?", queryString);
 
-            return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
+            return JsonConvert.DeserializeObject<DisruptionsModel>(json, this.JsonSettings).Disruptions;
         }
-        public async Task<DisruptionsApi.Payload> GetDisruption(string stationCode)
+        public async Task<DisruptionsModel.Disruption> GetDisruption(string stationCode)
         {
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions/"+stationCode);
-            return JsonConvert.DeserializeObject<DisruptionsApi.Payload>(json, this.JsonSettings);
+            return JsonConvert.DeserializeObject<DisruptionsModel.Disruption>(json, this.JsonSettings);
         }
-        public async Task<DisruptionsApi.Payload> GetDisruption(int uicCode)
+        public async Task<DisruptionsModel.Disruption> GetDisruption(int uicCode)
         {
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions/"+uicCode);
-            return JsonConvert.DeserializeObject<DisruptionsApi.Payload>(json, this.JsonSettings);
+            return JsonConvert.DeserializeObject<DisruptionsModel.Disruption>(json, this.JsonSettings);
         }
-        public async Task<List<DisruptionsApi.Payload>> GetStationDisruptions(string code)
+        public async Task<List<DisruptionsModel.Disruption>> GetStationDisruptions(string code)
         {
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/disruptions/station/"+code);
-            return JsonConvert.DeserializeObject<DisruptionsApi>(json, this.JsonSettings).Payloads;
+            return JsonConvert.DeserializeObject<DisruptionsModel>(json, this.JsonSettings).Disruptions;
         }
-        public async Task<List<CalamitiesApi.Melding>> GetCalamities()
+        public async Task<List<CalamitiesModel.Melding>> GetCalamities()
         {
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v1/calamities");
-            List<CalamitiesApi.Melding> meldingen = JsonConvert.DeserializeObject<CalamitiesApi>(json, this.JsonSettings).Meldingen;
-            return meldingen;
+            return JsonConvert.DeserializeObject<CalamitiesModel>(json, this.JsonSettings).Meldingen;
         }
-        public async Task<List<TripsApi.Trip>> GetTrips(string fromStation, string toStation, string viaStation = null,
+        public async Task<List<TripsModel.Trip>> GetTrips(string fromStation, string toStation, string viaStation = null,
             string travelClass = "SECOND_CLASS", bool originTransit = false, bool originWalk = false,
             bool originBike = false, bool originCar = false, bool destinationTransit = false,
             bool destinationWalk = false, bool destinationBike = false, bool destinationCar = false,
@@ -184,10 +173,10 @@ namespace NS_API.NET
 
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v3/trips?", queryString);
 
-            return JsonConvert.DeserializeObject<TripsApi>(json, this.JsonSettings).Trips;
+            return JsonConvert.DeserializeObject<TripsModel>(json, this.JsonSettings).Trips;
         }
         
-        public async Task<List<TripsApi.Trip>> GetTrips(int originUicCode, int destinationUicCode, int viaUicCode = default,
+        public async Task<List<TripsModel.Trip>> GetTrips(int originUicCode, int destinationUicCode, int viaUicCode = default,
             string travelClass = "SECOND_CLASS", bool originTransit = false, bool originWalk = false,
             bool originBike = false, bool originCar = false, bool destinationTransit = false,
             bool destinationWalk = false, bool destinationBike = false, bool destinationCar = false,
@@ -217,24 +206,24 @@ namespace NS_API.NET
 
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v3/trips?", queryString);
 
-            return JsonConvert.DeserializeObject<TripsApi>(json, this.JsonSettings).Trips;
+            return JsonConvert.DeserializeObject<TripsModel>(json, this.JsonSettings).Trips;
         }
 
-        public async Task<TripsApi.Trip> GetTrip(string reconCtx)
+        public async Task<TripsModel.Trip> GetTrip(string reconCtx)
         {
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["ctxRecon"] = reconCtx;
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v3/trips/trip?", queryString);
-            return JsonConvert.DeserializeObject<TripsApi.Trip>(json, this.JsonSettings);
+            return JsonConvert.DeserializeObject<TripsModel.Trip>(json, this.JsonSettings);
         }
-        public async Task<ExitSideApi> GetExitSide(int originUicCode, int destinationUicCode, int track)
+        public async Task<ExitSideModel> GetExitSide(int originUicCode, int destinationUicCode, int track)
         {
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["originUicCode"] = originUicCode.ToString();
             queryString["uicCode"] = destinationUicCode.ToString();
             queryString["track"] = track.ToString();
             var json = await this.HttpGet("https://gateway.apiportal.ns.nl/reisinformatie-api/api/v1/exitside?", queryString);
-            return JsonConvert.DeserializeObject<ExitSideApi>(json, this.JsonSettings);
+            return JsonConvert.DeserializeObject<ExitSideModel>(json, this.JsonSettings);
         }
     }    
 }

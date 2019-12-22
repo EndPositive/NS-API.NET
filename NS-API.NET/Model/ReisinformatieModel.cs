@@ -1,14 +1,424 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
-namespace NS_API.NET.Trips
+namespace NS_API.NET.Model
 {
-    public partial class TripsApi
+    public class ArrivalsModel
     {
-        [JsonProperty("trips")] public List<Trip> Trips { get; set; }
+        [JsonProperty("payload")]
+        public Payload Arrivals { get; set; }
+        
+        public partial class Payload
+        {
+            [JsonProperty("arrivals")]
+            public List<Arrival> Arrivals { get; set; }
+        }
+
+        public partial class Arrival
+        {
+            [JsonProperty("origin")]
+            public string Origin { get; set; }
+
+            [JsonProperty("name")]
+            public string Name { get; set; }
+
+            [JsonProperty("plannedTrack")]
+            public string PlannedTrack { get; set; }
+
+            [JsonProperty("actualTrack")]
+            public string ActualTrack { get; set; }
+
+            [JsonProperty("product")]
+            public Product Product { get; set; }
+
+            [JsonProperty("trainCategory")]
+            public string TrainCategory { get; set; }
+
+            [JsonProperty("cancelled")]
+            public bool Cancelled { get; set; }
+
+            [JsonProperty("plannedDateTime")]
+            public string PlannedDateTime { get; set; }
+
+            [JsonProperty("plannedTimeZoneOffset")]
+            public long PlannedTimeZoneOffset { get; set; }
+
+            [JsonProperty("actualDateTime")]
+            public string ActualDateTime { get; set; }
+
+            [JsonProperty("actualTimeZoneOffset")]
+            public long ActualTimeZoneOffset { get; set; }
+        }
+
+        public partial class Product
+        {
+            [JsonProperty("number")]
+            public string Number { get; set; }
+
+            [JsonProperty("categoryCode")]
+            public string CategoryCode { get; set; }
+
+            [JsonProperty("shortCategoryName")]
+            public string ShortCategoryName { get; set; }
+
+            [JsonProperty("longCategoryName")]
+            public string LongCategoryName { get; set; }
+
+            [JsonProperty("operatorCode")]
+            public string OperatorCode { get; set; }
+
+            [JsonProperty("operatorName")]
+            public string OperatorName { get; set; }
+
+            [JsonProperty("type")]
+            public string Type { get; set; }
+        }
+    }
+    public class CalamitiesModel
+    {
+        [JsonProperty("meldingen")]
+        public List<Melding> Meldingen { get; set; }
+        
+        public partial class Melding
+        {
+            [JsonProperty("id")] public string Id { get; set; }
+
+            [JsonProperty("titel")] public string Titel { get; set; }
+
+            [JsonProperty("beschrijving")] public string Beschrijving { get; set; }
+
+            [JsonProperty("type")] public string Type { get; set; }
+
+            [JsonProperty("url")] public Uri Url { get; set; }
+
+            [JsonProperty("buttonPositie")] public string ButtonPositie { get; set; }
+
+            [JsonProperty("laatstGewijzigd")] public long LaatstGewijzigd { get; set; }
+
+            [JsonProperty("volgendeUpdate")] public long VolgendeUpdate { get; set; }
+
+            [JsonProperty("bodyitems")] public List<object> Bodyitems { get; set; }
+
+            [JsonProperty("calltoactionbuttons")] public List<Calltoactionbutton> Calltoactionbuttons { get; set; }
+        }
+
+        public partial class Calltoactionbutton
+        {
+            [JsonProperty("callToAction")] public string CallToAction { get; set; }
+
+            [JsonProperty("openInNieuwVenter")] public bool OpenInNieuwVenter { get; set; }
+
+            [JsonProperty("type")] public string Type { get; set; }
+
+            [JsonProperty("url")] public Uri Url { get; set; }
+
+            [JsonProperty("voorleestitel")] public string Voorleestitel { get; set; }
+        }
+    }
+    public class DeparturesModel
+    {
+        [JsonProperty("payload")]
+        public Payload Departures { get; set; }
+
+        public partial class Payload
+        {
+            [JsonProperty("departures")]
+            public List<Departure> Departures { get; set; }
+        }
+
+        public partial class Departure
+        {
+            [JsonProperty("direction")]
+            public string Direction { get; set; }
+
+            [JsonProperty("name")]
+            public string Name { get; set; }
+
+            [JsonProperty("plannedDateTime")]
+            public string PlannedDateTime { get; set; }
+
+            [JsonProperty("plannedTimeZoneOffset")]
+            public long PlannedTimeZoneOffset { get; set; }
+
+            [JsonProperty("actualDateTime")]
+            public string ActualDateTime { get; set; }
+
+            [JsonProperty("actualTimeZoneOffset")]
+            public long ActualTimeZoneOffset { get; set; }
+
+            [JsonProperty("plannedTrack")]
+            public string PlannedTrack { get; set; }
+
+            [JsonProperty("product")]
+            public Product Product { get; set; }
+
+            [JsonProperty("trainCategory")]
+            public string TrainCategory { get; set; }
+
+            [JsonProperty("cancelled")]
+            public bool Cancelled { get; set; }
+
+            [JsonProperty("routeStations")]
+            public List<RouteStation> RouteStations { get; set; }
+
+            [JsonProperty("departureStatus")]
+            public string DepartureStatus { get; set; }
+        }
+
+        public partial class Product
+        {
+            [JsonProperty("number")]
+            public string Number { get; set; }
+
+            [JsonProperty("categoryCode")]
+            public string CategoryCode { get; set; }
+
+            [JsonProperty("shortCategoryName")]
+            public string ShortCategoryName { get; set; }
+
+            [JsonProperty("longCategoryName")]
+            public string LongCategoryName { get; set; }
+
+            [JsonProperty("operatorCode")]
+            public string OperatorCode { get; set; }
+
+            [JsonProperty("operatorName")]
+            public string OperatorName { get; set; }
+
+            [JsonProperty("type")]
+            public string Type { get; set; }
+        }
+
+        public partial class RouteStation
+        {
+            [JsonProperty("uicCode")]
+            public string UicCode { get; set; }
+
+            [JsonProperty("mediumName")]
+            public string MediumName { get; set; }
+        }
+    }
+    public class DisruptionsModel
+    {
+        [JsonProperty("payload")]
+        public List<Disruption> Disruptions { get; set; }
+
+        public partial class Disruption
+        {
+            [JsonProperty("id")]
+            public string Id { get; set; }
+
+            [JsonProperty("type")]
+            public string Type { get; set; }
+
+            [JsonProperty("titel")]
+            public string Titel { get; set; }
+
+            [JsonProperty("topic")]
+            public string Topic { get; set; }
+
+            [JsonProperty("verstoring")]
+            public Verstoring Verstoring { get; set; }
+        }
+
+        public partial class Verstoring
+        {
+            [JsonProperty("type")]
+            public string Type { get; set; }
+
+            [JsonProperty("id")]
+            public string Id { get; set; }
+
+            [JsonProperty("geldigheidsLijst")]
+            public List<GeldigheidsLijst> GeldigheidsLijst { get; set; }
+
+            [JsonProperty("verwachting")]
+            public string Verwachting { get; set; }
+
+            [JsonProperty("fase")]
+            public string Fase { get; set; }
+
+            [JsonProperty("faseLabel")]
+            public string FaseLabel { get; set; }
+
+            [JsonProperty("alternatiefVervoer")]
+            public string AlternatiefVervoer { get; set; }
+
+            [JsonProperty("landelijk")]
+            public bool Landelijk { get; set; }
+
+            [JsonProperty("oorzaak")]
+            public string Oorzaak { get; set; }
+
+            [JsonProperty("header")]
+            public string Header { get; set; }
+
+            [JsonProperty("meldtijd")]
+            public string Meldtijd { get; set; }
+
+            [JsonProperty("baanvakken")]
+            public List<Baanvakken> Baanvakken { get; set; }
+
+            [JsonProperty("trajecten")]
+            public List<Trajecten> Trajecten { get; set; }
+
+            [JsonProperty("versie")]
+            public string Versie { get; set; }
+
+            [JsonProperty("volgnummer")]
+            public string Volgnummer { get; set; }
+
+            [JsonProperty("prioriteit")]
+            public long Prioriteit { get; set; }
+
+            [JsonProperty("extraReistijd")]
+            public string ExtraReistijd { get; set; }
+
+            [JsonProperty("reisadviezen")]
+            public Reisadviezen Reisadviezen { get; set; }
+
+            [JsonProperty("gevolg")]
+            public string Gevolg { get; set; }
+
+            [JsonProperty("impact")]
+            public long? Impact { get; set; }
+
+            [JsonProperty("maatschappij")]
+            public long? Maatschappij { get; set; }
+
+            [JsonProperty("periode")]
+            public string Periode { get; set; }
+        }
+
+        public partial class Baanvakken
+        {
+            [JsonProperty("stations")]
+            public List<string> Stations { get; set; }
+        }
+
+        public partial class GeldigheidsLijst
+        {
+            [JsonProperty("startDatum")]
+            public string StartDatum { get; set; }
+
+            [JsonProperty("eindDatum")]
+            public string EindDatum { get; set; }
+        }
+
+        public partial class Reisadviezen
+        {
+            [JsonProperty("titel")]
+            public string Titel { get; set; }
+
+            [JsonProperty("reisadvies")]
+            public List<Reisadvy> Reisadvies { get; set; }
+        }
+
+        public partial class Reisadvy
+        {
+            [JsonProperty("titel")]
+            public string Titel { get; set; }
+
+            [JsonProperty("advies")]
+            public List<string> Advies { get; set; }
+        }
+
+        public partial class Trajecten
+        {
+            [JsonProperty("stations")]
+            public List<string> Stations { get; set; }
+
+            [JsonProperty("begintijd")]
+            public string Begintijd { get; set; }
+
+            [JsonProperty("eindtijd")]
+            public string Eindtijd { get; set; }
+
+            [JsonProperty("richting")]
+            public string Richting { get; set; }
+        }
+    }
+    public class ExitSideModel
+    {
+        [JsonProperty("uitstapzijde")]
+        public string Uitstapzijde { get; set; }
+    }
+    public class StationsModel
+    {
+        [JsonProperty("payload")]
+        public List<Station> Stations { get; set; }
+
+        public partial class Station
+        {
+            [JsonProperty("sporen")]
+            public List<Sporen> Sporen { get; set; }
+
+            [JsonProperty("synoniemen")]
+            public List<string> Synoniemen { get; set; }
+
+            [JsonProperty("heeftFaciliteiten")]
+            public bool HeeftFaciliteiten { get; set; }
+
+            [JsonProperty("heeftVertrektijden")]
+            public bool HeeftVertrektijden { get; set; }
+
+            [JsonProperty("heeftReisassistentie")]
+            public bool HeeftReisassistentie { get; set; }
+
+            [JsonProperty("code")]
+            public string Code { get; set; }
+
+            [JsonProperty("namen")]
+            public Namen Namen { get; set; }
+
+            [JsonProperty("stationType")]
+            public string StationType { get; set; }
+
+            [JsonProperty("land")]
+            public string Land { get; set; }
+
+            [JsonProperty("UICCode")]
+            public string UicCode { get; set; }
+
+            [JsonProperty("lat")]
+            public double Lat { get; set; }
+
+            [JsonProperty("lng")]
+            public double Lng { get; set; }
+
+            [JsonProperty("radius")]
+            public long Radius { get; set; }
+
+            [JsonProperty("naderenRadius")]
+            public long NaderenRadius { get; set; }
+
+            [JsonProperty("EVACode")]
+            public string EvaCode { get; set; }
+        }
+
+        public partial class Namen
+        {
+            [JsonProperty("lang")]
+            public string Lang { get; set; }
+
+            [JsonProperty("kort")]
+            public string Kort { get; set; }
+
+            [JsonProperty("middel")]
+            public string Middel { get; set; }
+        }
+
+        public partial class Sporen
+        {
+            [JsonProperty("spoorNummer")]
+            public string SpoorNummer { get; set; }
+        }
+    }
+    public class TripsModel
+    {
+        [JsonProperty("trips")]
+        public List<Trip> Trips { get; set; }
 
         [JsonProperty("scrollRequestBackwardContext")]
         public string ScrollRequestBackwardContext { get; set; }
